@@ -1,0 +1,11 @@
+node_modules
+dist
+tmp
+out-tsc
+.nx
+.angular
+coverage
+.env
+*.log
+.DS_Store
+.taste-skill
