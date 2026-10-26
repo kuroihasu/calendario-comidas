@@ -1,0 +1,113 @@
+<div class="panel">
+  <div class="row">
+    <h1>{{ id ? 'Editar día' : 'Nuevo día' }}</h1>
+    <a routerLink="/admin" class="link">← Volver</a>
+  </div>
+
+  <div class="layout">
+    <form (ngSubmit)="save()" novalidate>
+      <div class="grid">
+        <label>Nombre
+          <input name="name" [ngModel]="draft().name" (ngModelChange)="set('name', $event)" />
+          @if (errors()['name']) { <span class="error">{{ errors()['name'] }}</span> }
+        </label>
+        <label>Nombre corto
+          <input name="shortName" [ngModel]="draft().shortName" (ngModelChange)="set('shortName', $event)" />
+          @if (errors()['shortName']) { <span class="error">{{ errors()['shortName'] }}</span> }
+        </label>
+        <label>Slug (dirección)
+          <input name="slug" [ngModel]="draft().slug" (ngModelChange)="set('slug', $event)" placeholder="dia-del-completo" />
+          @if (errors()['slug']) { <span class="error">{{ errors()['slug'] }}</span> }
+        </label>
+        <label>Tipo
+          <select name="category" [ngModel]="draft().category" (ngModelChange)="set('category', $event)">
+            @for (c of categories; track c.value) { <option [value]="c.value">{{ c.label }}</option> }
+          </select>
+        </label>
+      </div>
+
+      <label>Bajada (una línea)
+        <input name="tagline" [ngModel]="draft().tagline" (ngModelChange)="set('tagline', $event)" />
+        @if (errors()['tagline']) { <span class="error">{{ errors()['tagline'] }}</span> }
+      </label>
+      <label>Descripción
+        <textarea name="description" [ngModel]="draft().description" (ngModelChange)="set('description', $event)"></textarea>
+        @if (errors()['description']) { <span class="error">{{ errors()['description'] }}</span> }
+      </label>
+
+      <div class="grid">
+        <label>Regla de fecha
+          <select name="rule" [ngModel]="draft().dateRuleType" (ngModelChange)="set('dateRuleType', $event)">
+            <option value="fixed">Fecha fija</option>
+            <option value="nth_weekday">Día de la semana del mes</option>
+          </select>
+        </label>
+        <label>Mes
+          <select name="month" [ngModel]="draft().month" (ngModelChange)="set('month', +$event)">
+            @for (m of months; track m; let i = $index) { <option [value]="i + 1">{{ m }}</option> }
+          </select>
+        </label>
+        @if (draft().dateRuleType === 'fixed') {
+          <label>Día
+            <input name="day" type="number" min="1" max="31" [ngModel]="draft().day" (ngModelChange)="set('day', num($event))" />
+            @if (errors()['day']) { <span class="error">{{ errors()['day'] }}</span> }
+          </label>
+        } @else {
+          <label>Semana
+            <select name="weekOfMonth" [ngModel]="draft().weekOfMonth" (ngModelChange)="set('weekOfMonth', num($event))">
+              <option [value]="1">Primera</option><option [value]="2">Segunda</option><option [value]="3">Tercera</option>
+              <option [value]="4">Cuarta</option><option [value]="-1">Última</option>
+            </select>
+            @if (errors()['weekOfMonth']) { <span class="error">{{ errors()['weekOfMonth'] }}</span> }
+          </label>
+          <label>Día de la semana
+            <select name="weekday" [ngModel]="draft().weekday" (ngModelChange)="set('weekday', num($event))">
+              @for (w of weekdays; track w; let i = $index) { <option [value]="i + 1">{{ w }}</option> }
+            </select>
+            @if (errors()['weekday']) { <span class="error">{{ errors()['weekday'] }}</span> }
+          </label>
+        }
+      </div>
+
+      <label>Fuente o nota de la fecha
+        <input name="sourceNote" [ngModel]="draft().sourceNote" (ngModelChange)="set('sourceNote', $event)" />
+      </label>
+      <label>Imagen (URL https, opcional)
+        <input name="imageUrl" [ngModel]="draft().imageUrl" (ngModelChange)="set('imageUrl', $event)" />
+        @if (errors()['imageUrl']) { <span class="error">{{ errors()['imageUrl'] }}</span> }
+      </label>
+
+      <div>
+        <p><strong>Ingredientes</strong> (de arriba hacia abajo). Toca uno de la lista para agregarlo; toca uno elegido para quitarlo.</p>
+        <div class="layers" style="margin: 10px 0">
+          @for (k of draft().layers; track $index) {
+            <button type="button" class="chosen" (click)="removeLayer($index)">{{ $index + 1 }}. {{ label(k) }} ×</button>
+          }
+        </div>
+        <div class="layers">
+          @for (i of ingredients; track i.key) {
+            <button type="button" (click)="addLayer(i.key)"><span class="swatch" [style.background]="i.color"></span>{{ i.label }}</button>
+          }
+        </div>
+        @if (errors()['layers']) { <span class="error">{{ errors()['layers'] }}</span> }
+      </div>
+
+      <label class="check">
+        <input type="checkbox" name="isActive" [ngModel]="draft().isActive" (ngModelChange)="set('isActive', $event)" />
+        Visible en la web
+      </label>
+
+      @if (message()) { <p class="error" role="alert">{{ message() }}</p> }
+      <div class="actions">
+        <button class="btn btn--tomate" type="submit" [disabled]="busy()"><cc-btn-label text="Guardar" /></button>
+        @if (id) { <button class="btn btn--ghost" type="button" (click)="remove()"><cc-btn-label text="Borrar" /></button> }
+      </div>
+    </form>
+
+    <aside class="preview" aria-label="Vista previa">
+      <cc-stack-art [layers]="draft().layers" [category]="draft().category" [name]="draft().name" />
+      <strong>{{ draft().name || 'Sin nombre' }}</strong>
+      <span class="muted">Cada año, {{ ruleLabel() }}</span>
+    </aside>
+  </div>
+</div>

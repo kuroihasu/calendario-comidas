@@ -1,0 +1,451 @@
+/* ---------- Hero: el próximo día servido en un plato sobre mantel rojo ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  min-height: 100svh;
+}
+
+.hero__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: clamp(20px, 2.4vw, 32px);
+  padding-top: 140px;
+  padding-bottom: clamp(40px, 5vw, 72px);
+
+  h1 {
+    font-size: min(12.5rem, calc(54vw / (var(--len, 8) * 0.56)));
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 0.18em;
+  }
+}
+
+.mask {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.04em;
+}
+.w {
+  display: inline-block;
+}
+
+.hero__when {
+  max-width: 34ch;
+  font-size: var(--step-1);
+  line-height: 1.35;
+  font-weight: 500;
+}
+.cap {
+  font-weight: 700;
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.clock {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: 0.35em;
+  font-variation-settings: var(--condensed);
+  font-weight: 800;
+  line-height: 0.9;
+}
+.clock__days {
+  font-size: clamp(3.5rem, 2rem + 4vw, 6rem);
+  color: var(--tomate);
+}
+.clock__unit {
+  font-size: var(--step-2);
+  text-transform: uppercase;
+}
+.clock__time {
+  font-size: var(--step-2);
+  color: var(--ink-soft);
+  margin-left: 0.4em;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.note {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.hero__field {
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: var(--tomate);
+  overflow: hidden;
+  min-height: 420px;
+}
+
+.hero__plate {
+  position: absolute;
+  width: min(86%, 560px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--ground);
+}
+.hero__plate::after {
+  content: '';
+  position: absolute;
+  inset: 11%;
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.hero__art {
+  position: relative;
+  width: min(74%, 440px);
+  transition: transform 0.7s var(--ease-out);
+}
+.hero__field:hover .hero__art {
+  transform: rotate(-4deg) scale(1.04);
+}
+
+.hero--empty {
+  min-height: 70svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 24px;
+  padding-bottom: 64px;
+  h1 {
+    font-size: var(--step-3);
+  }
+}
+
+/* ---------- Lo que viene: una fila de platos que se desliza ---------- */
+.rail {
+  padding-top: var(--section);
+}
+
+.rail__head {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 4fr) auto;
+  align-items: end;
+  gap: var(--gutter);
+  margin-bottom: clamp(32px, 4vw, 56px);
+
+  h2 {
+    font-size: var(--step-3);
+  }
+  p {
+    max-width: 36ch;
+  }
+}
+
+.rail__nav {
+  display: flex;
+  gap: 10px;
+}
+
+.round {
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: background-color 0.3s var(--ease-out), color 0.3s var(--ease-out), transform 0.4s var(--ease-out);
+  &:hover {
+    background: var(--ink);
+    color: var(--ground);
+  }
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.rail__track {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--gutter) 8px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(270px, 30vw, 440px);
+  gap: clamp(16px, 2vw, 28px);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  > li {
+    scroll-snap-align: start;
+  }
+}
+
+.dish {
+  display: grid;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.dish__plate {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  padding: 8%;
+  border-radius: 28px;
+  background: var(--surface);
+  transition: background-color 0.5s var(--ease-out);
+  margin-bottom: 8px;
+
+  cc-stack-art {
+    width: 100%;
+    transition: transform 0.7s var(--ease-out);
+  }
+}
+.dish:hover .dish__plate {
+  background: #e6e2d8;
+}
+.dish:hover cc-stack-art {
+  transform: translateY(-10px) rotate(-3deg) scale(1.05);
+}
+
+.dish__date {
+  font-weight: 600;
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+.dish__name {
+  font-size: var(--step-2);
+  font-weight: 800;
+  font-variation-settings: var(--semi);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.dish__tag {
+  color: var(--ink-soft);
+}
+
+/* ---------- El año: la pizarra ---------- */
+.year {
+  margin-top: var(--section);
+  padding-block: var(--section);
+  background: var(--pizarra);
+  color: var(--tiza);
+}
+
+.year__head {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--gutter);
+  align-items: end;
+  margin-bottom: clamp(40px, 5vw, 72px);
+
+  h2 {
+    font-size: var(--step-3);
+  }
+  p {
+    max-width: 40ch;
+  }
+}
+
+/* ---------- Tu fecha ---------- */
+.finder {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: var(--gutter);
+  align-items: center;
+  padding-block: var(--section);
+}
+
+.finder__ask {
+  display: grid;
+  gap: 24px;
+  h2 {
+    font-size: var(--step-3);
+  }
+  p {
+    max-width: 40ch;
+  }
+}
+
+.finder__form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  label {
+    display: grid;
+    gap: 6px;
+    font-weight: 600;
+  }
+  select {
+    min-height: 60px;
+    min-width: 120px;
+    padding: 0 1em;
+    border: 2px solid var(--ink);
+    border-radius: 16px;
+    background: var(--ground);
+    font: inherit;
+    font-size: var(--step-1);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  label:last-child select {
+    min-width: 200px;
+  }
+}
+
+.finder__answer {
+  display: grid;
+  justify-items: center;
+  gap: 24px;
+  padding: clamp(32px, 4vw, 56px);
+  border-radius: 50%;
+  aspect-ratio: 1;
+  align-content: center;
+  background: var(--surface);
+  text-decoration: none;
+  transition: transform 0.6s var(--ease-out), background-color 0.4s var(--ease-out);
+
+  cc-stack-art {
+    width: 52%;
+  }
+  &:hover {
+    transform: rotate(-3deg);
+    background: #e6e2d8;
+  }
+}
+
+.finder__result {
+  max-width: 22ch;
+  text-align: center;
+  font-size: var(--step-1);
+  line-height: 1.3;
+  strong {
+    font-weight: 800;
+  }
+}
+
+/* ---------- App ---------- */
+.app {
+  background: var(--tomate);
+  color: #fff;
+  padding-block: var(--section);
+  overflow: hidden;
+}
+
+.app__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: var(--gutter);
+  align-items: center;
+}
+
+.app__copy {
+  display: grid;
+  gap: 28px;
+  justify-items: start;
+  h2 {
+    font-size: var(--step-3);
+  }
+  p {
+    max-width: 44ch;
+    color: #fff;
+  }
+}
+
+.phone {
+  justify-self: center;
+  width: min(100%, 360px);
+  aspect-ratio: 9 / 17;
+  border-radius: 48px;
+  background: var(--ink);
+  padding: 22px 16px;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  color: var(--ground);
+  rotate: 4deg;
+}
+
+.phone__time {
+  justify-self: center;
+  font-size: 4rem;
+  font-weight: 300;
+  font-variation-settings: var(--semi);
+  margin: 40px 0 28px;
+}
+
+.notice {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 20px;
+  background: #2b2724;
+  font-size: 0.92rem;
+  line-height: 1.3;
+
+  strong,
+  span {
+    display: block;
+  }
+  span {
+    color: #c9c3bc;
+  }
+}
+
+.notice__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #57514b;
+}
+
+.notice--old {
+  opacity: 0.55;
+}
+
+/* ---------- Teléfono ---------- */
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .hero__text {
+    padding-top: 112px;
+    order: 1;
+    h1 {
+      font-size: calc(90vw / (var(--len, 8) * 0.56));
+    }
+  }
+  .hero__field {
+    order: 2;
+    min-height: 0;
+    aspect-ratio: 1;
+  }
+  .rail__head,
+  .year__head,
+  .finder,
+  .app__inner {
+    grid-template-columns: 1fr;
+  }
+  .rail__nav {
+    display: none;
+  }
+  .finder__answer {
+    border-radius: 32px;
+    aspect-ratio: auto;
+  }
+  .phone {
+    rotate: 0deg;
+    width: min(100%, 300px);
+  }
+}
