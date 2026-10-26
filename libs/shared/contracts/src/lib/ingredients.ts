@@ -8,7 +8,7 @@ export const INGREDIENTS = {
   vienesa: { label: 'Vienesa', color: '#C0503A', height: 0.9 },
   tomate: { label: 'Tomate', color: '#E23B2E', height: 0.7 },
   palta: { label: 'Palta', color: '#7FA845', height: 0.9 },
-  mayo: { label: 'Mayonesa', color: '#F5EEDA', height: 0.45 },
+  mayo: { label: 'Mayonesa', color: '#FBEFB8', height: 0.5 },
   churrasco: { label: 'Churrasco', color: '#6A3523', height: 0.8 },
   lomito: { label: 'Lomito', color: '#8B4A35', height: 0.8 },
   porotos: { label: 'Porotos verdes', color: '#4E8B3A', height: 0.7 },

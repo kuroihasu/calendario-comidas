@@ -1,0 +1,92 @@
+// Estilos compartidos del panel: es una herramienta, prima la claridad.
+:host {
+  display: block;
+}
+.panel {
+  padding: 120px var(--gutter) 96px;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+h1 {
+  font-size: var(--step-2);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.98rem;
+}
+th,
+td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid #dcd8ce;
+  vertical-align: middle;
+}
+th {
+  font-weight: 700;
+}
+td a {
+  font-weight: 700;
+}
+.muted {
+  color: var(--ink-soft);
+}
+.pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.85rem;
+  &.off {
+    background: #f4d6d3;
+  }
+}
+form {
+  display: grid;
+  gap: 18px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+input,
+select,
+textarea {
+  font: inherit;
+  padding: 12px 14px;
+  border: 1px solid #b9b3a8;
+  border-radius: 12px;
+  background: #fff;
+  font-weight: 400;
+}
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+.error {
+  color: var(--tomate-press);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

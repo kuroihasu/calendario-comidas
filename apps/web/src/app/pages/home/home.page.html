@@ -1,0 +1,156 @@
+@if (next(); as n) {
+  <header class="hero">
+    <div class="hero__text wrap">
+      <h1 class="display" [attr.aria-label]="n.name" [style.--len]="longest(n.name)">
+        @for (w of words(n.name); track $index) {
+          <span class="mask"><span class="w">{{ w }}</span></span>
+        }
+      </h1>
+      <p class="hero__when">
+        @if (nextDays() === 0) {
+          Es hoy, {{ longDate(n.date) }}.
+        } @else {
+          <span class="cap">{{ longDate(n.date) }}</span>. {{ n.tagline }}
+        }
+      </p>
+
+      <div class="clock num" aria-live="off" [attr.aria-label]="'Faltan ' + clock().days + ' días'">
+        <span class="clock__days">{{ clock().days }}</span>
+        <span class="clock__unit">{{ clock().days === 1 ? 'día' : 'días' }}</span>
+        <span class="clock__time">{{ pad(clock().hours) }}:{{ pad(clock().minutes) }}:{{ pad(clock().seconds) }}</span>
+      </div>
+
+      <div class="actions">
+        <a class="btn btn--tomate" [routerLink]="['/dia', n.slug]" [ccMorph]="n.slug" ccMagnetic>
+          <cc-btn-label text="Ver el día" /><span class="btn__arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="btn btn--ghost" [href]="ics"><cc-btn-label text="Suscribirme al calendario" /></a>
+      </div>
+      @if (!n.isConfirmed) {
+        <p class="note">Fecha por confirmar: no tiene fuente oficial.</p>
+      }
+    </div>
+
+    <a class="hero__field" [routerLink]="['/dia', n.slug]" [ccMorph]="n.slug" [attr.aria-label]="'Ver ' + n.name">
+      <div class="hero__plate" aria-hidden="true"></div>
+      <cc-stack-art class="hero__art" [layers]="n.layers" [category]="n.category" [name]="n.name" />
+      <span class="visually-hidden" data-morph-title>{{ n.name }}</span>
+    </a>
+  </header>
+} @else {
+  <header class="hero hero--empty wrap">
+    <h1 class="display">Días de comida de Chile</h1>
+    <p class="hero__when">No pudimos cargar el calendario. Intenta de nuevo en un momento.</p>
+  </header>
+}
+
+@if (rail().length) {
+  <section class="rail" id="lo-que-viene" aria-labelledby="rail-title">
+    <div class="rail__head wrap">
+      <h2 id="rail-title" class="display" data-reveal>Lo que viene</h2>
+      <p data-reveal>Los próximos días de comida, en orden. Toca uno para ver qué lleva y cuánto falta.</p>
+      <div class="rail__nav" data-reveal>
+        <button type="button" class="round" (click)="scrollRail(-1, track)" aria-label="Anteriores">←</button>
+        <button type="button" class="round" (click)="scrollRail(1, track)" aria-label="Siguientes">→</button>
+      </div>
+    </div>
+    <ol class="rail__track" #track>
+      @for (e of rail(); track e.slug; let i = $index) {
+        <li data-reveal>
+          <a class="dish" [routerLink]="['/dia', e.slug]" [ccMorph]="e.slug">
+            <div class="dish__plate">
+              <cc-stack-art [layers]="e.layers" [category]="e.category" [name]="e.name" />
+            </div>
+            <span class="dish__date num">{{ longDate(e.date) }}</span>
+            <h3 class="dish__name" data-morph-title>{{ e.name }}</h3>
+            <span class="dish__tag">{{ e.tagline }}</span>
+          </a>
+        </li>
+      }
+    </ol>
+  </section>
+}
+
+<section class="year" id="el-ano" aria-labelledby="year-title">
+  <div class="wrap">
+    <div class="year__head">
+      <h2 id="year-title" class="display" data-reveal>{{ year }}, mes a mes</h2>
+      <p data-reveal>
+        La carta completa del año. Cada día tiene su página con la fecha, lo que lleva y cuánto falta.
+        <a class="link" [routerLink]="['/calendario', year + 1]">Ver {{ year + 1 }} →</a>
+      </p>
+    </div>
+    @if (calendar(); as c) {
+      <cc-board [entries]="c.entries" [today]="today" />
+    }
+  </div>
+</section>
+
+<section class="finder wrap" id="tu-fecha" aria-labelledby="finder-title">
+  <div class="finder__ask">
+    <h2 id="finder-title" class="display" data-reveal>¿Y en tu cumpleaños?</h2>
+    <p data-reveal>Elige un día y te decimos qué día de comida cae más cerca, para que tengas excusa.</p>
+    <div class="finder__form" data-reveal>
+      <label>
+        <span>Día</span>
+        <select #d [value]="pickDay()" (change)="setDay(d.value)">
+          @for (o of dayOptions(); track o) {
+            <option [value]="o" [selected]="o === pickDay()">{{ o }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        <span>Mes</span>
+        <select #m (change)="setMonth(m.value)">
+          @for (o of months; track o; let i = $index) {
+            <option [value]="i + 1" [selected]="i + 1 === pickMonth()">{{ o }}</option>
+          }
+        </select>
+      </label>
+    </div>
+  </div>
+
+  @if (match(); as r) {
+    <a class="finder__answer" [routerLink]="['/dia', r.entry.slug]" [ccMorph]="r.entry.slug" aria-live="polite">
+      <cc-stack-art [layers]="r.entry.layers" [category]="r.entry.category" [name]="r.entry.name" />
+      <p class="finder__result">
+        @if (r.diff === 0) {
+          ¡Ese mismo día es el <strong data-morph-title>{{ r.entry.name }}</strong>!
+        } @else {
+          <strong data-morph-title>{{ r.entry.name }}</strong>, {{ r.diff }} {{ r.diff === 1 ? 'día' : 'días' }} después.
+        }
+      </p>
+    </a>
+  }
+</section>
+
+<section class="app" aria-labelledby="app-title">
+  <div class="app__inner wrap">
+    <div class="app__copy">
+      <h2 id="app-title" class="display" data-reveal>Que te avise el celular</h2>
+      <p data-reveal>
+        La app para Android y iPhone viene en camino: eliges los días que te importan y te llega un aviso antes. Mientras
+        tanto, suscríbete al calendario y Google Calendar o el Calendario de Apple te avisan la víspera.
+      </p>
+      <div data-reveal><a class="btn btn--light" [href]="ics" ccMagnetic><cc-btn-label text="Suscribirme al calendario" /></a></div>
+    </div>
+    @if (next(); as n) {
+      <div class="phone" data-ui data-reveal aria-hidden="true">
+        <div class="phone__time num">09:41</div>
+        <div class="notice">
+          <div class="notice__icon">
+            <svg viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#E23B2E"/><rect x="10" y="16" width="44" height="10" rx="5" fill="#D8954A"/><rect x="8" y="27" width="48" height="6" rx="3" fill="#F5EEDA"/><rect x="8" y="33" width="48" height="6" rx="3" fill="#7FA845"/><rect x="6" y="39" width="52" height="7" rx="3.5" fill="#C0503A"/><rect x="10" y="46" width="44" height="8" rx="4" fill="#D8954A"/></svg>
+          </div>
+          <div>
+            <strong>Mañana es el {{ n.name }}</strong>
+            <span>{{ n.tagline }}</span>
+          </div>
+        </div>
+        <div class="notice notice--old">
+          <div class="notice__icon"></div>
+          <div><strong>Calendario</strong><span>Suscripción agregada</span></div>
+        </div>
+      </div>
+    }
+  </div>
+</section>

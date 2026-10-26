@@ -1,1 +1,289 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+ * Calendario de Comidas: tokens y base.
+ * Paleta tomada del completo italiano: tomate, palta y mayo sobre blanco,
+ * y la pizarra verde de la fuente de soda para el año completo.
+ */
+:root {
+  --ground: #fafaf7;
+  --surface: #efede6;
+  --ink: #161311;
+  --ink-soft: #57514b;
+  --tomate: #e23b2e;
+  --tomate-press: #c42e22;
+  --palta: #7fa845;
+  --pizarra: #17251b;
+  --pizarra-2: #20322a;
+  --tiza: #f3f0e6;
+  --tiza-soft: #b9c2b4;
+
+  --font: 'Archivo', system-ui, sans-serif;
+  --condensed: 'wdth' 64;
+  --semi: 'wdth' 82;
+
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
+  --step-2: clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem);
+  --step-3: clamp(3rem, 1.6rem + 6vw, 7.5rem);
+  --step-4: clamp(4rem, 1rem + 12vw, 13rem);
+
+  --gutter: clamp(16px, 2.4vw, 32px);
+  --section: clamp(96px, 12vw, 200px);
+  --radius-pill: 999px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  font-variation-settings: 'wdth' 100;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+::selection {
+  background: var(--tomate);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 3px solid var(--tomate);
+  outline-offset: 3px;
+}
+
+.display {
+  font-variation-settings: var(--condensed);
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.88;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.wrap {
+  padding-inline: var(--gutter);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Botones: forma de vienesa (pill), relleno que sube al pasar el cursor. */
+.btn {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--ground);
+  --btn-fill: var(--tomate);
+  --btn-fill-fg: #fff;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 56px;
+  padding: 0 1.6em;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.5s var(--ease-out), color 0.35s var(--ease-out);
+  will-change: transform;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--btn-fill);
+  border-radius: inherit;
+  transform: translateY(101%);
+  transition: transform 0.5s var(--ease-out);
+}
+.btn__label {
+  position: relative;
+  display: inline-grid;
+  overflow: hidden;
+}
+.btn__label > span {
+  grid-area: 1 / 1;
+  transition: transform 0.5s var(--ease-out);
+}
+.btn__label > span + span {
+  transform: translateY(110%);
+}
+.btn:hover,
+.btn:focus-visible {
+  color: var(--btn-fill-fg);
+}
+.btn:hover::before,
+.btn:focus-visible::before {
+  transform: translateY(0);
+}
+.btn:hover .btn__label > span:first-child,
+.btn:focus-visible .btn__label > span:first-child {
+  transform: translateY(-110%);
+}
+.btn:hover .btn__label > span + span,
+.btn:focus-visible .btn__label > span + span {
+  transform: translateY(0);
+}
+.btn:active {
+  transform: scale(0.96);
+}
+.btn--tomate {
+  --btn-bg: var(--tomate);
+  --btn-fg: #fff;
+  --btn-fill: var(--ink);
+}
+.btn--light {
+  --btn-bg: var(--ground);
+  --btn-fg: var(--ink);
+  --btn-fill: var(--ink);
+  --btn-fill-fg: var(--ground);
+}
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: currentColor;
+  box-shadow: inset 0 0 0 2px currentColor;
+}
+.btn__arrow {
+  transition: transform 0.5s var(--ease-out);
+}
+.btn:hover .btn__arrow {
+  transform: translateX(4px);
+}
+
+/* Enlaces de texto con subrayado que se dibuja. */
+.link {
+  position: relative;
+  text-decoration: none;
+}
+.link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.45s var(--ease-out);
+}
+.link:hover::after,
+.link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Entradas: el script las anima; sin script quedan visibles. */
+.js-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+/* Transiciones de página (View Transitions API). */
+::view-transition-old(root) {
+  animation: 420ms var(--ease-in-out) both page-out;
+}
+::view-transition-new(root) {
+  animation: 620ms var(--ease-out) both page-in;
+}
+::view-transition-group(stack) {
+  animation-duration: 700ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-group(day-title) {
+  animation-duration: 650ms;
+  animation-timing-function: var(--ease-out);
+}
+@keyframes page-out {
+  to {
+    opacity: 0;
+    transform: translateY(-3vh) scale(0.985);
+  }
+}
+@keyframes page-in {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+  .js-ready [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,79 @@
+@if (day(); as d) {
+  <header class="head" [style.--field]="field()" [style.--field-ink]="fieldInk()">
+    <div class="head__text wrap">
+      <a class="back link" routerLink="/" fragment="el-ano">← Calendario</a>
+      <h1 class="display" style="view-transition-name: day-title" [style.--len]="longest(d.name)" [attr.aria-label]="d.name">
+        @for (w of words(d.name); track $index) {<span class="w">{{ w }}</span> }
+      </h1>
+      <p class="when">
+        @if (d.next.daysUntil === 0) {
+          <strong>Es hoy.</strong> {{ d.tagline }}
+        } @else {
+          <strong class="cap">{{ longDate(d.next.date) }} de {{ d.next.date.slice(0, 4) }}.</strong> {{ d.tagline }}
+        }
+      </p>
+      <div class="clock num" [attr.aria-label]="'Faltan ' + clock().days + ' días'">
+        <span class="clock__days">{{ clock().days }}</span>
+        <span class="clock__unit">{{ clock().days === 1 ? 'día' : 'días' }}</span>
+        <span class="clock__time">{{ pad(clock().hours) }}:{{ pad(clock().minutes) }}:{{ pad(clock().seconds) }}</span>
+      </div>
+      <div class="actions">
+        <a class="btn" [href]="ics(d.slug)" download ccMagnetic><cc-btn-label text="Agregar a mi calendario" /></a>
+        <button type="button" class="btn btn--ghost" (click)="share(d)">
+          <cc-btn-label [text]="copied() ? 'Enlace copiado' : 'Compartir'" />
+        </button>
+      </div>
+    </div>
+    <div class="head__art">
+      <div class="plate" aria-hidden="true"></div>
+      <cc-stack-art style="view-transition-name: stack" [layers]="d.layers" [category]="d.category" [name]="d.name" />
+    </div>
+  </header>
+
+  <section class="anatomy wrap" aria-labelledby="anatomy-title">
+    <div class="anatomy__text">
+      <h2 id="anatomy-title" class="display" data-reveal>Qué lleva</h2>
+      <p class="lead" data-reveal>{{ d.description }}</p>
+      <dl class="facts" data-reveal>
+        <div><dt>Cuándo</dt><dd>Cada año, {{ d.ruleLabel }}</dd></div>
+        <div><dt>Tipo</dt><dd>{{ categoryLabel(d.category) }}</dd></div>
+        <div>
+          <dt>Fecha</dt>
+          <dd>{{ d.next.isConfirmed ? 'Confirmada' : 'Por confirmar' }}@if (d.sourceNote) {. {{ d.sourceNote }}}</dd>
+        </div>
+      </dl>
+    </div>
+    <div class="anatomy__art">
+      <cc-stack-art [layers]="d.layers" [category]="d.category" [name]="d.name" [labels]="true" />
+    </div>
+  </section>
+
+  <nav class="around" aria-label="Días cercanos">
+    @if (d.neighbours.previous; as p) {
+      <a class="around__item" [routerLink]="['/dia', p.slug]" [ccMorph]="p.slug">
+        <cc-stack-art [layers]="p.layers" [category]="p.category" />
+        <span class="around__dir">← Antes · {{ longDate(p.date) }}</span>
+        <span class="around__name" data-morph-title>{{ p.name }}</span>
+      </a>
+    }
+    @if (d.neighbours.next; as n) {
+      <a class="around__item around__item--next" [routerLink]="['/dia', n.slug]" [ccMorph]="n.slug">
+        <cc-stack-art [layers]="n.layers" [category]="n.category" />
+        <span class="around__dir">Después · {{ longDate(n.date) }} →</span>
+        <span class="around__name" data-morph-title>{{ n.name }}</span>
+      </a>
+    }
+  </nav>
+} @else if (missing()) {
+  <header class="lost wrap">
+    <h1 class="display">Ese día no está en la carta</h1>
+    <p>Puede que el enlace esté mal escrito o que el día ya no se celebre.</p>
+    <a class="btn btn--tomate" routerLink="/"><cc-btn-label text="Ver el calendario" /></a>
+  </header>
+} @else if (load()) {
+  <header class="lost wrap">
+    <h1 class="display">La cocina está cerrada</h1>
+    <p>No pudimos cargar este día. Intenta de nuevo en un momento.</p>
+    <a class="btn btn--tomate" routerLink="/"><cc-btn-label text="Volver al inicio" /></a>
+  </header>
+}

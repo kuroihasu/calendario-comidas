@@ -1,18 +1,20 @@
-import {
-  ApplicationConfig,
-  provideBrowserGlobalErrorListeners,
-} from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideRouter, withInMemoryScrolling, withViewTransitions } from '@angular/router';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { appRoutes } from './app.routes';
-import {
-  provideClientHydration,
-  withEventReplay,
-} from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideClientHydration(withEventReplay()),
     provideBrowserGlobalErrorListeners(),
-    provideRouter(appRoutes),
+    provideZonelessChangeDetection(),
+    provideClientHydration(withEventReplay()),
+    provideHttpClient(withFetch()),
+    provideRouter(
+      appRoutes,
+      withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
+      // Transiciones de página con la View Transitions API; sin soporte, navega igual.
+      withViewTransitions({ skipInitialTransition: true }),
+    ),
   ],
 };
